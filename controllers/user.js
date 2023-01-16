@@ -45,11 +45,10 @@ const unfollowUser = async (req, res) => {
 
 const getUserProfile = async (req, res) => {
     // res.json(req.user)
-    const { id: userId } = req.params
     // res.send('all followers')
-    const user = await User.findById(userId)
+    const user = await User.findById(req.user.userId)
     if (!user) {
-        throw new NotFoundError(`No user with id ${userId}`)
+        throw new NotFoundError(`No user with id ${req.user.userId}`)
     }
     const { followers, following, name, username, from, userProfilePicture } = user
     res.json({
