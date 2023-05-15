@@ -9,7 +9,7 @@ Table of Contents
 - [Technologies](#technologies)
 
 ## Installation
-1.Clone the repository: `git clone https://github.com/your-username/social-media-api.git`
+1.Clone the repository: `git clone https://github.com/omkarvw/Social-Media-API`
 2.Install dependencies: `npm install`
 
 ## Usage
