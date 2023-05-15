@@ -3,10 +3,10 @@
 This project is an API for a social media platform. It provides a set of endpoints to manage users, posts, comments, likes, and other social media-related functionalities. The API allows developers to integrate social media features into their applications.
 
 Table of Contents
-[Installation]
-[Usage]
-[API Endpoints]
-[Technologies]
+- [Installation](#installation)
+- [Usage](#usage)
+- [API Endpoints](#api endpoints)
+- [Technologies](#technologies)
 
 ## Installation
 1.Clone the repository: `git clone https://github.com/your-username/social-media-api.git`
