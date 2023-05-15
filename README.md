@@ -5,7 +5,7 @@ This project is an API for a social media platform. It provides a set of endpoin
 Table of Contents
 - [Installation](#installation)
 - [Usage](#usage)
-- [API Endpoints](#api endpoints)
+- [API Endpoints](#api-endpoints)
 - [Technologies](#technologies)
 
 ## Installation
