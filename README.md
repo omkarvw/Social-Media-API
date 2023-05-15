@@ -20,21 +20,21 @@ Table of Contents
 3.The API will be available at `http://localhost:3000`. You can use tools like Postman or cURL to send requests to the API endpoints.
 
 ## API Endpoints
-- /api/v1/auth/register : Register a new user.
-- /api/v1/auth/login : Login for an existing user.
-- /api/v1/user : Get own user profile.
-- /api/v1/user/follow/:id : Follow user with id = `id`.
-- /api/v1/user/unfollow/:id : Unfolllow user with id = `id`.
-- /api/v1/post/ : Get all posts
-- /api/v1/post/ : Create a post.
-- /api/v1/post/:id : Get a single post.
-- /api/v1/post/id : Delete a single post.
-- /api/v1/post/like/id : Like post with id = `id`.
-- /api/v1/post/unlike/id : Unlike post with id = `id`.
-- /api/v1/post/comment/:id : Add comment to post with id = `id`.
-- /api/v1/user/followers/:id : Get all followers of a user with user id = `id`
-- /api/v1/user/following/:id : Get all followings of a user with user id = `id`
-- /api/v1/user/:id : Get user with user id = `id`
+- /api/v1/auth/register (POST) : Register a new user.
+- /api/v1/auth/login (POST) : Login for an existing user.
+- /api/v1/user (GET) : Get own user profile.
+- /api/v1/user/follow/:id (POST) : Follow user with id = `id`.
+- /api/v1/user/unfollow/:id (POST) : Unfolllow user with id = `id`.
+- /api/v1/post/ (GET) : Get all posts
+- /api/v1/post/ (POST) : Create a post.
+- /api/v1/post/:id (GET) : Get a single post.
+- /api/v1/post/id (DELETE) : Delete a single post.
+- /api/v1/post/like/id (POST) : Like post with id = `id`.
+- /api/v1/post/unlike/id (POST) : Unlike post with id = `id`.
+- /api/v1/post/comment/:id (POST) : Add comment to post with id = `id`.
+- /api/v1/user/followers/:id (GET) : Get all followers of a user with user id = `id`
+- /api/v1/user/following/:id (GET) : Get all followings of a user with user id = `id`
+- /api/v1/user/:id (GET) : Get user with user id = `id`
 
 ## Technologies
 - Node.js
