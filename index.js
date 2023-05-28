@@ -6,7 +6,6 @@ const app = express()
 const helmet = require('helmet')
 const morgan = require('morgan')
 const cors = require('cors')
-// const bodyParser = require('body-parser')
 const connectDB = require('./db/connect')
 const authRoutes = require('./routes/authRoute')
 const userRoutes = require('./routes/userRoute')
@@ -14,8 +13,7 @@ const postRoutes = require('./routes/postRoute')
 const authMiddleware = require('./middleware/auth')
 const errorHandlerMiddleware = require('./middleware/errorHandler')
 const notFoundMiddleware = require('./middleware/notFound')
-// const path = require('path')
-// const {fileURLToPath} = require('url')
+
 
 app.use(express.json());
 
@@ -24,11 +22,6 @@ app.use(helmet())
 
 
 app.use(morgan('tiny'))
-// app.use(morgan('common'))
-
-
-// app.use(bodyParser.json({ limit: "30mb", extended: true }));
-// app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 
 // app.use(bp.json()) looks at requests where the Content-Type: application/json header is present and transforms the text-based JSON input into JS-accessible variables under req.body. app.use(bp.urlencoded({extended: true}) does the same for URL-encoded requests. the extended: true precises that the req.body object will contain values of any type instead of just strings.
 
