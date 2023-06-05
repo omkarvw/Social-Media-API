@@ -9,10 +9,11 @@ const authRoutes = require('./routes/authRoute')
 const userRoutes = require('./routes/userRoute')
 const postRoutes = require('./routes/postRoute')
 const authMiddleware = require('./middleware/auth')
-const corsOptions = require('/config/corsOptions')
+const corsOptions = require('./config/corsOptions')
 const errorHandlerMiddleware = require('./middleware/errorHandler')
 const notFoundMiddleware = require('./middleware/notFound')
 const { logger, logEvents } = require('./middleware/logger')
+const cookieParser = require('cookie-parser')
 
 app.use(logger)
 app.use(express.json());
@@ -32,10 +33,10 @@ mongoose.set("strictQuery", true);
 const start = async () => {
     try {
         await connectDB(process.env.MONGO_URI)
-        app.listen(PORT, () => { console.log('Server is listening on port ' + PORT + '\nConnected to mongodb server'); })
-    } catch (error) {
-        logEvents(`${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`, 'mongoErrLog.log')
-        console.log(error);
+        app.listen(PORT, () => { console.log('Server is listening on port ' + PORT); })
+    } catch (err) {
+        logEvents(`${err.message}`, 'mongoErrLog.log')
+        console.log(err);
     }
 }
 

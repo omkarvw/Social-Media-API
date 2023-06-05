@@ -14,9 +14,9 @@ const postSchema = new Schema({
         required: [true, 'Description must be provided'],
         type: String,
     },
-    postPicturePath: [{
+    postPicturePath: {
         type: String,
-    }],
+    },
     likes: {
         type: Array,
         default: []

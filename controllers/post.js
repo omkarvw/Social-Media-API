@@ -18,7 +18,7 @@ const getAllPostsByUser = async (req, res) => {
 }
 
 const getAllPosts = async (req, res) => {
-    const posts = await Post.find().sort({ createdAt: -1 })
+    const posts = await Post.find().sort({ createdAt: -1 }).lean()
     const postsWithUser = await Promise.all(posts.map(
         async post => {
             const user = await User.findById(post.createdById).lean()

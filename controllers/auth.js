@@ -9,12 +9,12 @@ const registerController = async (req, res) => {
     const accessToken = jwt.sign(
         {
             "UserInfo": {
-                "username": user.username,
+                "userId": user._id,
                 "roles": user.roles
             }
         },
         process.env.JWT_LOGIN_SECRET,
-        { expiresIn: JWT_LOGIN_EXPIRY }
+        { expiresIn: '15m' }
     )
 
     const refreshToken = jwt.sign(
@@ -22,7 +22,7 @@ const registerController = async (req, res) => {
             "username": user.username,
         },
         process.env.JWT_REFRESH_SECRET,
-        { expiresIn: JWT_REFRESH_EXPIRY }
+        { expiresIn: '7d' }
     )
 
     res.cookie('jwt', refreshToken, {
@@ -57,20 +57,20 @@ const loginController = async (req, res) => {
     const accessToken = jwt.sign(
         {
             "UserInfo": {
-                "username": user.username,
+                "userId": user._id,
                 "roles": user.roles
             }
         },
         process.env.JWT_LOGIN_SECRET,
-        { expiresIn: JWT_LOGIN_EXPIRY }
+        { expiresIn: process.env.JWT_LOGIN_EXPIRY }
     )
 
     const refreshToken = jwt.sign(
         {
-            "username": user.username,
+            "userId": user._id,
         },
         process.env.JWT_REFRESH_SECRET,
-        { expiresIn: JWT_REFRESH_EXPIRY }
+        { expiresIn: '7d' }
     )
 
     res.cookie('jwt', refreshToken, {
@@ -79,6 +79,8 @@ const loginController = async (req, res) => {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'none'
     })
+
+    console.log(accessToken, 'sent')
 
     res.status(200).json({
         accessToken
@@ -98,7 +100,7 @@ const refreshController = async (req, res) => {
         if (err) {
             throw new UnauthenticatedError("Please login")
         }
-        const user = await User.findOne({ username: decoded.username })
+        const user = await User.findById(decoded.userId)
 
         if (!user) {
             throw new UnauthenticatedError("Please login")
@@ -107,14 +109,14 @@ const refreshController = async (req, res) => {
         const accessToken = jwt.sign(
             {
                 "UserInfo": {
-                    "username": user.username,
+                    "userId": user._id,
                     "roles": user.roles
                 }
             },
             process.env.JWT_LOGIN_SECRET,
-            { expiresIn: JWT_LOGIN_EXPIRY }
+            { expiresIn: '15m' }
         )
-
+        console.log('sent')
         res.status(200).json({
             accessToken
         })

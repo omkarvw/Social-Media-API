@@ -1,5 +1,4 @@
 const express = require('express')
-const mongoose = require('mongoose')
 const router = express.Router()
 const { loginController, registerController, logoutController, refreshController } = require('../controllers/auth')
 
