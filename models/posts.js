@@ -13,15 +13,13 @@ const postSchema = new Schema({
     description: {
         required: [true, 'Description must be provided'],
         type: String,
-        default : ""
     },
-    postPicturePath: {
+    postPicturePath: [{
         type: String,
-        default: ''
-    },
+    }],
     likes: {
-        type : Array,
-        default : []
+        type: Array,
+        default: []
     },
 }, { timestamps: true })
 

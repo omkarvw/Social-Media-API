@@ -29,7 +29,6 @@ const userSchema = new Schema({
     },
     userProfilePicture: {
         type: String,
-        default: ""
     },
     password: {
         type: String,
@@ -55,34 +54,30 @@ const userSchema = new Schema({
     profession: {
         type: String,
         max: 30,
-        default : ''
+        default: ''
     },
     from: {
         type: String,
         max: 50,
-        default : ''
+        default: ''
+    },
+    roles: {
+        type: [String],
+        default: ['user']
     }
 }, { timestamps: true })
 
 userSchema.pre('save', async function () {
     const salt = await bcrypt.genSalt(10)
     this.password = await bcrypt.hash(this.password, salt)
-    // next()
 })
 
 userSchema.methods.getName = function () {
     return this.name
 }
 
-userSchema.methods.createJWT = function () {
-    return jwt.sign({ userId: this._id, name: this.name }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRATION
-    })
-}
-
 userSchema.methods.comparePassword = async function (candidatePassword) {
-    const isMatch = await bcrypt.compare(candidatePassword,this.password)
-    // ordering of arguments is important as well
+    const isMatch = await bcrypt.compare(candidatePassword, this.password)
     return isMatch
 }
 

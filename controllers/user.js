@@ -13,7 +13,6 @@ const followUser = async (req, res) => {
         throw new NotFoundError(`No user with id ${followingId}`)
     }
     if (followeruser.following.includes(followingId)) {
-        // return res.status(400).json('You are already following this user.')
         throw new BadRequestError(`You already follow ${followinguser.username}`)
     }
     followeruser.following.push(followingId)
@@ -25,7 +24,6 @@ const followUser = async (req, res) => {
 }
 
 const unfollowUser = async (req, res) => {
-    // res.send('unfollow user')
     const { userId: followerId } = req.user
     const { id: followingId } = req.params
     const followeruser = await User.findById(followerId)
@@ -44,8 +42,6 @@ const unfollowUser = async (req, res) => {
 }
 
 const getUserProfile = async (req, res) => {
-    // res.json(req.user)
-    // res.send('all followers')
     const user = await User.findById(req.user.userId)
     if (!user) {
         throw new NotFoundError(`No user with id ${req.user.userId}`)
@@ -63,12 +59,10 @@ const getUserProfile = async (req, res) => {
 
 const getAllFollowers = async (req, res) => {
     const { id: userId } = req.params
-    // res.send('all followers')
     const user = await User.findById(userId)
     if (!user) {
         throw new NotFoundError(`No user with id ${followingId}`)
     }
-    // console.log(user.followers[0]);
     const userFollowers = []
     for (let i = 0; i < user.followers.length; i++) {
         const follower = await User.findById(user.followers[i])
@@ -88,7 +82,6 @@ const getAllFollowers = async (req, res) => {
 
 const getAllFollowing = async (req, res) => {
     const { id: userId } = req.params
-    // res.send('all following')
     const user = await User.findById(userId)
     if (!user) {
         throw new NotFoundError(`No user with id ${followingId}`)

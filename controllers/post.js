@@ -19,7 +19,6 @@ const getAllPosts = async (req, res) => {
 
 const getSinglePost = async (req, res) => {
     const { id: postId } = req.params
-    // console.log(req.params);
     const post = await Post.findById({
         _id: postId
     })
@@ -47,6 +46,7 @@ const getSinglePost = async (req, res) => {
 }
 
 const likePost = async (req, res) => {
+    const { id: postId } = req.params
     const post = await Post.findById(req.params.id)
     if (!post) {
         throw NotFoundError(`No post with id ${postId} exists`)
@@ -58,6 +58,7 @@ const likePost = async (req, res) => {
 }
 
 const unlikePost = async (req, res) => {
+    const { id: postId } = req.params
     const post = await Post.findById(req.params.id)
     if (!post) {
         throw NotFoundError(`No post with id ${postId} exists`)
@@ -68,6 +69,7 @@ const unlikePost = async (req, res) => {
 }
 
 const deletePost = async (req, res) => {
+    const { id: postId } = req.params
     const post = await Post.findById(req.params.id)
     if (!post) {
         throw NotFoundError(`No post with id ${postId} exists`)
