@@ -9,12 +9,24 @@ const createPost = async (req, res) => {
     res.status(200).json(post)
 }
 
-const getAllPosts = async (req, res) => {
+const getAllPostsByUser = async (req, res) => {
     const user = await User.findById(req.user.userId)
     const posts = await Post.find({
         createdById: req.user.userId
-    }).sort({ createdAt: -1 })
+    }).sort({ createdAt: -1 }).lean()
     res.status(200).json({ posts, count: posts.length, username: user.username, userProfilePicture: user.userProfilePicture })
+}
+
+const getAllPosts = async (req, res) => {
+    const posts = await Post.find().sort({ createdAt: -1 })
+    const postsWithUser = await Promise.all(posts.map(
+        async post => {
+            const user = await User.findById(post.createdById).lean()
+            return { ...post, username: user.username, userProfilePicture: user.userProfilePicture }
+        }
+    ))
+
+    res.status(200).json(postsWithUser)
 }
 
 const getSinglePost = async (req, res) => {
@@ -32,7 +44,7 @@ const getSinglePost = async (req, res) => {
     commentsToBeSent = []
     for (let i = 0; i < comments.length; i++) {
         const commentUser = await User.findById(comments[i].userID)
-        const { _id, postID, userID, mainComment, createdAt, updatedAt } = comments[i]
+        const { _id, userID, mainComment, createdAt, } = coments[i]
         const toBePushed = {
             _id, userID, mainComment, createdAt
         }
@@ -94,5 +106,6 @@ module.exports = {
     deletePost,
     addCommentToPost,
     getSinglePost,
-    getAllPosts
+    getAllPosts,
+    getAllPostsByUser
 }

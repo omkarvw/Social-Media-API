@@ -1,16 +1,39 @@
 const User = require('../models/users')
 require('dotenv').config
 const { BadRequestError, UnauthenticatedError } = require('../errors')
+const jwt = require('jsonwebtoken')
 
 const registerController = async (req, res) => {
 
     const user = await User.create({ ...req.body })
-    const token = user.createJWT()
+    const accessToken = jwt.sign(
+        {
+            "UserInfo": {
+                "username": user.username,
+                "roles": user.roles
+            }
+        },
+        process.env.JWT_LOGIN_SECRET,
+        { expiresIn: JWT_LOGIN_EXPIRY }
+    )
+
+    const refreshToken = jwt.sign(
+        {
+            "username": user.username,
+        },
+        process.env.JWT_REFRESH_SECRET,
+        { expiresIn: JWT_REFRESH_EXPIRY }
+    )
+
+    res.cookie('jwt', refreshToken, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'none'
+    })
+
     res.status(200).json({
-        token, user: {
-            name: user.name,
-            username: user.username
-        }
+        accessToken
     })
 }
 
@@ -62,7 +85,7 @@ const loginController = async (req, res) => {
     })
 }
 
-const refresh = async (req, res) => {
+const refreshController = async (req, res) => {
     const cookies = req.cookies
 
     if (!cookies?.jwt) {
@@ -99,7 +122,7 @@ const refresh = async (req, res) => {
     )
 }
 
-const logout = async (req, res) => {
+const logoutController = async (req, res) => {
     const cookies = req.cookies
     if (!cookies?.jwt) {
         return res.status(204)
@@ -112,4 +135,4 @@ const logout = async (req, res) => {
     res.json({ message: "Logout successful" })
 }
 
-module.exports = { loginController, registerController }
+module.exports = { loginController, registerController, refreshController, logoutController }

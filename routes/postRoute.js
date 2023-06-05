@@ -8,10 +8,12 @@ const {
     deletePost,
     addCommentToPost,
     getSinglePost,
-    getAllPosts
+    getAllPosts,
+    getAllPostsByUser,
 } = require('../controllers/post')
 
 router.route('/').post(createPost).get(getAllPosts)
+router.route('/:userId').get(getAllPostsByUser)
 router.route('/:id').get(getSinglePost).delete(deletePost)
 router.route('/like/:id').post(likePost)
 router.route('/unlike/:id').post(unlikePost)
