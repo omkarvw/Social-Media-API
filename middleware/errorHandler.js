@@ -1,6 +1,9 @@
 const { StatusCodes } = require('http-status-codes')
+const { logEvents } = require('../middleware/logger')
 
 const errorHandlerMiddleware = (err, req, res, next) => {
+
+  logEvents(`${err.name}: ${err.message}\t${req.method}\t${req.url}\t${req.headers.origin}`, 'errLog.log')
 
   let customError = {
     statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
