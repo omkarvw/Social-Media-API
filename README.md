@@ -22,6 +22,8 @@ Table of Contents
 ## API Endpoints
 - `/api/v1/auth/register` (POST) : Register a new user.
 - `/api/v1/auth/login` (POST) : Login for an existing user.
+- `/api/v1/auth/refresh` (GET) : Refresh the access token.
+- `/api/v1/auth/logout` (POST) : Logout of your account.
 - `/api/v1/user` (GET) : Get own user profile.
 - `/api/v1/user/follow/:id` (POST) : Follow user with id = `id`.
 - `/api/v1/user/unfollow/:id` (POST) : Unfolllow user with id = `id`.
