@@ -2,9 +2,28 @@ const Post = require('../models/posts')
 const User = require('../models/users')
 const Comment = require('../models/Comment')
 const { NotFoundError } = require('../errors')
+const { cloudinaryConfig } = require('../config/cloudinary')
+const cloudinary = require('cloudinary').v2
+const fs = require('fs')
 
 const createPost = async (req, res) => {
+
     const { userId } = req.user
+    if (req.files && req.files.image) {
+        const file = req.files.image
+        cloudinaryConfig()
+        const result = await cloudinary.uploader.upload(file.tempFilePath, {
+            folder: "test",
+        })
+        req.body.postPicturePath = result.secure_url
+    }
+    const dir = './tmp'
+    fs.rm(dir, { recursive: true }, (err) => {
+        if (err) {
+            throw err;
+        }
+        console.log('deleted');
+    })
     const post = await Post.create({ createdById: userId, ...req.body })
     res.status(200).json(post)
 }

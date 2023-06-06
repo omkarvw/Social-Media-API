@@ -3,6 +3,7 @@ const User = require('../models/users')
 const { BadRequestError, UnauthenticatedError, NotFoundError } = require('../errors')
 
 
+
 const followUser = async (req, res) => {
     // res.send('follow user')
     const { userId: followerId } = req.user

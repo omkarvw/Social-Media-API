@@ -14,7 +14,12 @@ const errorHandlerMiddleware = require('./middleware/errorHandler')
 const notFoundMiddleware = require('./middleware/notFound')
 const { logger, logEvents } = require('./middleware/logger')
 const cookieParser = require('cookie-parser')
+const fileUpload = require('express-fileupload')
 
+app.use(express.urlencoded({ extended: false }))
+app.use(fileUpload({
+    useTempFiles: true
+}))
 app.use(logger)
 app.use(express.json());
 app.use(cors(corsOptions))

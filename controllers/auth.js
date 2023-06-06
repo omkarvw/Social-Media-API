@@ -2,9 +2,20 @@ const User = require('../models/users')
 require('dotenv').config
 const { BadRequestError, UnauthenticatedError } = require('../errors')
 const jwt = require('jsonwebtoken')
+const { cloudinaryConfig } = require('../config/cloudinary')
+const cloudinary = require('cloudinary').v2
 
 const registerController = async (req, res) => {
 
+    if (req.files && req.files.image) {
+        const file = req.files.image
+        cloudinaryConfig()
+        const result = await cloudinary.uploader.upload(file.tempFilePath, {
+            folder: "test",
+        })
+        req.body.userProfilePicture = result.secure_url
+    }
+    console.log(req.body);
     const user = await User.create({ ...req.body })
     const accessToken = jwt.sign(
         {

@@ -11,9 +11,8 @@ const {
     getAllPosts,
     getAllPostsByUser,
 } = require('../controllers/post')
-const { multerUploads } = require('../middleware/multer')
 
-router.route('/').post(multerUploads, createPost).get(getAllPosts)
+router.route('/').post(createPost).get(getAllPosts)
 router.route('/:userId').get(getAllPostsByUser)
 router.route('/:id').get(getSinglePost).delete(deletePost)
 router.route('/like/:id').post(likePost)
