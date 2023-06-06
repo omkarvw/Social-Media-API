@@ -1,9 +1,9 @@
 const { findById } = require('../models/users')
 const User = require('../models/users')
 const { BadRequestError, UnauthenticatedError, NotFoundError } = require('../errors')
+const { th } = require('date-fns/locale')
 
-
-
+// adds user to following array of logged in user
 const followUser = async (req, res) => {
     // res.send('follow user')
     const { userId: followerId } = req.user
@@ -24,6 +24,7 @@ const followUser = async (req, res) => {
 
 }
 
+// removes user from following array of logged in user
 const unfollowUser = async (req, res) => {
     const { userId: followerId } = req.user
     const { id: followingId } = req.params
@@ -42,27 +43,35 @@ const unfollowUser = async (req, res) => {
     res.status(200).json(`You are no longer following ${followinguser.username}`)
 }
 
-const getUserProfile = async (req, res) => {
-    const user = await User.findById(req.user.userId)
-    if (!user) {
-        throw new NotFoundError(`No user with id ${req.user.userId}`)
+// get all users
+// allowed only if logged in user is admin
+const getAllUsers = async (req, res) => {
+    const users = await User.find().lean()
+    const roles = req.user.roles
+    if (!roles.includes('admin')) {
+        throw new UnauthenticatedError('You are not authorized to view all users')
     }
-    const { followers, following, name, username, from, userProfilePicture } = user
-    res.json({
-        username,
-        name,
-        userProfilePicture,
-        followers: followers.length,
-        following: following.length,
-        from
+    usersToBeSent = []
+    users.map(user => {
+        const { _id, username, name, userProfilePicture, from, followers, following } = user
+        usersToBeSent.push({
+            _id, username, name, userProfilePicture, from, followers: followers.length, following: following.length
+        })
     })
+    res.json({ users: usersToBeSent })
 }
 
+// gets all followers of a user
+// allowed only if logged in user is following the user
 const getAllFollowers = async (req, res) => {
     const { id: userId } = req.params
     const user = await User.findById(userId)
     if (!user) {
-        throw new NotFoundError(`No user with id ${followingId}`)
+        throw new NotFoundError(`No user with id ${userId}`)
+    }
+    const loggedInUserIsFollower = user.followers.includes(req.user.userId)
+    if (!loggedInUserIsFollower) {
+        throw new UnauthenticatedError(`You are not a follower of ${user.username}. Please follow to see the followers of ${user.username}`)
     }
     const userFollowers = []
     for (let i = 0; i < user.followers.length; i++) {
@@ -81,11 +90,17 @@ const getAllFollowers = async (req, res) => {
     res.status(200).json({ msg: `The user ${userId} is followed by following users`, userFollowers })
 }
 
+// gets all following of a user
+// allowed only if logged in user is following the user
 const getAllFollowing = async (req, res) => {
     const { id: userId } = req.params
     const user = await User.findById(userId)
     if (!user) {
         throw new NotFoundError(`No user with id ${followingId}`)
+    }
+    const loggedInUserIsFollowing = user.followers.includes(req.user.userId)
+    if (!loggedInUserIsFollowing) {
+        throw new UnauthenticatedError(`You are not following ${user.username}. Please follow to see the following of ${user.username}`)
     }
     const userFollowings = []
     for (let i = 0; i < user.following.length; i++) {
@@ -104,6 +119,7 @@ const getAllFollowing = async (req, res) => {
     res.status(200).json({ msg: `Followers of the id ${userId} are as follows`, userFollowings, })
 }
 
+// gets profile of a single user
 const getSingleUser = async (req, res) => {
     const { id: userId } = req.params
     const user = await User.findById(userId)
@@ -121,10 +137,12 @@ const getSingleUser = async (req, res) => {
     })
 }
 
+
+
 module.exports = {
     followUser,
     unfollowUser,
-    getUserProfile
+    getAllUsers
     , getAllFollowers,
     getAllFollowing,
     getSingleUser

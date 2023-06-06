@@ -5,6 +5,12 @@ const jwt = require('jsonwebtoken')
 const { cloudinaryConfig } = require('../config/cloudinary')
 const cloudinary = require('cloudinary').v2
 
+
+// uploads profile picture to cloudinary
+// creates user in db
+// creates jwt
+// sends jwt refresh token as cookie
+// sends jwt access token as response
 const registerController = async (req, res) => {
 
     if (req.files && req.files.image) {
@@ -48,6 +54,13 @@ const registerController = async (req, res) => {
     })
 }
 
+
+// checks if email and password are provided
+// checks if user exists in db
+// checks if password is correct
+// creates jwt
+// sends jwt refresh token as cookie
+// sends jwt access token as response
 const loginController = async (req, res) => {
 
     const { email, password } = req.body
@@ -98,6 +111,11 @@ const loginController = async (req, res) => {
     })
 }
 
+// checks if jwt refresh token is provided
+// checks if jwt refresh token is valid
+// checks if user exists in db
+// creates jwt
+// sends jwt access token as response
 const refreshController = async (req, res) => {
     const cookies = req.cookies
 
@@ -135,6 +153,7 @@ const refreshController = async (req, res) => {
     )
 }
 
+// clears jwt refresh token cookie
 const logoutController = async (req, res) => {
     const cookies = req.cookies
     if (!cookies?.jwt) {
