@@ -6,6 +6,8 @@ const { cloudinaryConfig } = require('../config/cloudinary')
 const cloudinary = require('cloudinary').v2
 const fs = require('fs')
 
+// uploads post picture to cloudinary
+// creates post in db
 const createPost = async (req, res) => {
 
     const { userId } = req.user
@@ -28,6 +30,7 @@ const createPost = async (req, res) => {
     res.status(200).json(post)
 }
 
+// gets all posts by the logged in user
 const getAllPostsByUser = async (req, res) => {
     const user = await User.findById(req.user.userId)
     const posts = await Post.find({
@@ -36,18 +39,26 @@ const getAllPostsByUser = async (req, res) => {
     res.status(200).json({ posts, count: posts.length, username: user.username, userProfilePicture: user.userProfilePicture })
 }
 
+// gets all posts by users followed by the logged in user
 const getAllPosts = async (req, res) => {
-    const posts = await Post.find().sort({ createdAt: -1 }).lean()
+    const { userId } = req.user
+    const user = await User.findById(userId)
+    const following = user.following
+    const posts = await Post.find(
+        {
+            createdById: { $in: [...following] }
+        }
+    ).sort({ createdAt: -1 }).lean()
     const postsWithUser = await Promise.all(posts.map(
         async post => {
             const user = await User.findById(post.createdById).lean()
             return { ...post, username: user.username, userProfilePicture: user.userProfilePicture }
         }
     ))
-
     res.status(200).json(postsWithUser)
 }
 
+// gets a single post by id
 const getSinglePost = async (req, res) => {
     const { id: postId } = req.params
     const post = await Post.findById({
@@ -63,7 +74,7 @@ const getSinglePost = async (req, res) => {
     commentsToBeSent = []
     for (let i = 0; i < comments.length; i++) {
         const commentUser = await User.findById(comments[i].userID)
-        const { _id, userID, mainComment, createdAt, } = coments[i]
+        const { _id, userID, mainComment, createdAt, } = comments[i]
         const toBePushed = {
             _id, userID, mainComment, createdAt
         }
@@ -76,6 +87,7 @@ const getSinglePost = async (req, res) => {
     res.status(200).json({ post, username: user.username, userProfilePicture: user.userProfilePicture, commentsToBeSent })
 }
 
+// likes a post
 const likePost = async (req, res) => {
     const { id: postId } = req.params
     const post = await Post.findById(req.params.id)
@@ -88,6 +100,7 @@ const likePost = async (req, res) => {
     res.status(200).json("You liked this post.")
 }
 
+// unlikes a post
 const unlikePost = async (req, res) => {
     const { id: postId } = req.params
     const post = await Post.findById(req.params.id)
@@ -99,6 +112,7 @@ const unlikePost = async (req, res) => {
     res.status(200).json("You unliked this post.")
 }
 
+// deletes a post
 const deletePost = async (req, res) => {
     const { id: postId } = req.params
     const post = await Post.findById(req.params.id)
@@ -110,6 +124,7 @@ const deletePost = async (req, res) => {
     res.status(200).json("Post deleted successfully.")
 }
 
+// adds a comment to a post
 const addCommentToPost = async (req, res) => {
     const { id: postId } = req.params
     const { userId } = req.user
