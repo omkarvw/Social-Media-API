@@ -32,7 +32,7 @@ const createPost = async (req, res) => {
 
 // gets all posts by the logged in user
 const getAllPostsByUser = async (req, res) => {
-    const user = await User.findById(req.user.userId)
+    const user = await User.findById(req.user.userId).lean()
     const posts = await Post.find({
         createdById: req.user.userId
     }).sort({ createdAt: -1 }).lean()
@@ -63,7 +63,7 @@ const getSinglePost = async (req, res) => {
     const { id: postId } = req.params
     const post = await Post.findById({
         _id: postId
-    })
+    }).lean()
     if (!post) {
         throw NotFoundError(`No post with id ${postId} exists`)
     }
@@ -119,7 +119,10 @@ const deletePost = async (req, res) => {
     if (!post) {
         throw NotFoundError(`No post with id ${postId} exists`)
     }
-    if (post.createdById != req.user.userId) return res.status(400).json("You can't delete this post.")
+    const roles = req.user.roles
+    if (!roles.includes("admin") && post.createdById != req.user.userId) {
+        throw new UnauthenticatedError('You are not authorized to delete this post')
+    }
     await post.delete()
     res.status(200).json("Post deleted successfully.")
 }
@@ -133,6 +136,23 @@ const addCommentToPost = async (req, res) => {
     res.status(200).json(comment)
 }
 
+// deletes a comment
+// only the user who created the comment or an admin can delete a comment
+const deleteComment = async (req, res) => {
+    const { commentId } = req.params
+    const comment = await Comment.findById(req.params.id)
+    if (!comment) {
+        throw NotFoundError(`No comment with id ${commentId} exists`)
+    }
+    const roles = req.user.roles
+    if (roles.includes("admin") || comment.userID == req.user.userId) {
+        await comment.delete()
+        res.status(200).json("Comment deleted successfully.")
+    }
+    else {
+        throw new UnauthenticatedError('You are not authorized to delete this comment')
+    }
+}
 module.exports = {
     createPost,
     likePost,
@@ -141,5 +161,6 @@ module.exports = {
     addCommentToPost,
     getSinglePost,
     getAllPosts,
-    getAllPostsByUser
+    getAllPostsByUser,
+    deleteComment
 }

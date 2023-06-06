@@ -17,7 +17,7 @@ router.route('/:userId').get(getAllPostsByUser)
 router.route('/:id').get(getSinglePost).delete(deletePost)
 router.route('/like/:id').post(likePost)
 router.route('/unlike/:id').post(unlikePost)
-// most probably will shift comment routes to diff doc once comment model is created
 router.route('/comment/:id').post(addCommentToPost)
+router.route('/comment/:commentId').delete(deleteComment)
 
 module.exports = router

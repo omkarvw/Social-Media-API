@@ -1,5 +1,7 @@
 const { findById } = require('../models/users')
 const User = require('../models/users')
+const Post = require('../models/posts')
+const Comment = require('../models/Comment')
 const { BadRequestError, UnauthenticatedError, NotFoundError } = require('../errors')
 const { th } = require('date-fns/locale')
 
@@ -137,7 +139,49 @@ const getSingleUser = async (req, res) => {
     })
 }
 
+// update the info of logged in user
+const updateUser = async (req, res) => {
+    if (req.files && req.files.image) {
+        const file = req.files.image
+        cloudinaryConfig()
+        const result = await cloudinary.uploader.upload(file.tempFilePath, {
+            folder: "test",
+        })
+        req.body.userProfilePicture = result.secure_url
+    }
+    const { userId } = req.user
+    const { name, from, profession, userProfilePicture, password } = req.body
+    const user = User.findById(userId)
+    if (!user) {
+        throw new NotFoundError(`No user with id ${userId}`)
+    }
+    user.name = name
+    user.from = from
+    user.profession = profession
+    user.userProfilePicture = userProfilePicture
+    user.password = password
+    await user.save()
+    res.status(200).json({ msg: 'User updated successfully' })
+}
 
+// allowed only for admin and the user itself
+const deleteUser = async (req, res) => {
+    const { id } = req.params
+    const { loggedUserId } = req.user
+    const roles = req.user.roles
+    if (!roles.includes('admin') && loggedUserId != req.params.id) {
+        throw new UnauthenticatedError('You are not authorized to delete this user')
+    }
+    try {
+        await User.findByIdAndDelete(id)
+        await Post.deleteMany({ createdById: id })
+        await Comment.deleteMany({ userId: id })
+    }
+    catch (err) {
+        throw new BadRequestError('Something went wrong')
+    }
+    res.status(200).json({ msg: 'User deleted successfully' })
+}
 
 module.exports = {
     followUser,
@@ -145,5 +189,6 @@ module.exports = {
     getAllUsers
     , getAllFollowers,
     getAllFollowing,
-    getSingleUser
+    getSingleUser,
+    updateUser, deleteUser
 }
