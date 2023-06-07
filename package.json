@@ -4,8 +4,7 @@
   "description": "A social media API made during Web Development Session by TPC",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app",
-    "test": "jest"
+    "start": "nodemon app"
   },
   "keywords": [
     "node"
@@ -30,9 +29,5 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "uuid": "^9.0.0"
-  },
-  "devDependencies": {
-    "jest": "^29.5.0",
-    "supertest": "^6.3.3"
   }
 }
