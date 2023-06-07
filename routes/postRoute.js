@@ -10,6 +10,7 @@ const {
     getSinglePost,
     getAllPosts,
     getAllPostsByUser,
+    deleteComment
 } = require('../controllers/post')
 
 router.route('/').post(createPost).get(getAllPosts)
