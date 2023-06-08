@@ -1,10 +1,11 @@
 {
   "name": "social-media-api-challenge",
   "version": "1.0.0",
-  "description": "A social media API made during Web Development Session by TPC",
+  "description": "A social media API for developers to integrate social media related functionalities into their apps.",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app"
+    "start": "node index",
+    "dev": "nodemon index"
   },
   "keywords": [
     "node"
