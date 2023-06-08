@@ -1,5 +1,5 @@
 {
-  "name": "social-media-api-challenge",
+  "name": "social-media-api",
   "version": "1.0.0",
   "description": "A social media API for developers to integrate social media related functionalities into their apps.",
   "main": "index.js",
