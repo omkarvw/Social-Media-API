@@ -15,6 +15,9 @@ const registerController = async (req, res) => {
 
     if (req.files && req.files.image) {
         const file = req.files.image
+        if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+            throw new BadRequestError('Only jpg and png files are allowed')
+        }
         cloudinaryConfig()
         const result = await cloudinary.uploader.upload(file.tempFilePath, {
             folder: "test",
@@ -50,7 +53,10 @@ const registerController = async (req, res) => {
     })
 
     res.status(200).json({
-        accessToken
+        accessToken, UserInfo: {
+            userId: user._id,
+            username: user.username,
+        }
     })
 }
 
@@ -104,10 +110,11 @@ const loginController = async (req, res) => {
         sameSite: 'none'
     })
 
-    console.log(accessToken, 'sent')
-
     res.status(200).json({
-        accessToken
+        accessToken, UserInfo: {
+            userId: user._id,
+            username: user.username,
+        }
     })
 }
 
@@ -147,7 +154,10 @@ const refreshController = async (req, res) => {
         )
         console.log('sent')
         res.status(200).json({
-            accessToken
+            accessToken, UserInfo: {
+                userId: user._id,
+                username: user.username,
+            }
         })
     }
     )

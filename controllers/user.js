@@ -72,7 +72,7 @@ const getAllFollowers = async (req, res) => {
         throw new NotFoundError(`No user with id ${userId}`)
     }
     const loggedInUserIsFollower = user.followers.includes(req.user.userId)
-    if (!loggedInUserIsFollower) {
+    if (!loggedInUserIsFollower && req.user.userId != userId) {
         throw new UnauthenticatedError(`You are not a follower of ${user.username}. Please follow to see the followers of ${user.username}`)
     }
     const userFollowers = []
@@ -101,7 +101,7 @@ const getAllFollowing = async (req, res) => {
         throw new NotFoundError(`No user with id ${followingId}`)
     }
     const loggedInUserIsFollowing = user.followers.includes(req.user.userId)
-    if (!loggedInUserIsFollowing) {
+    if (!loggedInUserIsFollowing && req.user.userId != userId) {
         throw new UnauthenticatedError(`You are not following ${user.username}. Please follow to see the following of ${user.username}`)
     }
     const userFollowings = []

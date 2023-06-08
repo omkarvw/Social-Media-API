@@ -13,6 +13,9 @@ const createPost = async (req, res) => {
     const { userId } = req.user
     if (req.files && req.files.image) {
         const file = req.files.image
+        if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+            throw new BadRequestError('Only jpg and png files are allowed')
+        }
         cloudinaryConfig()
         const result = await cloudinary.uploader.upload(file.tempFilePath, {
             folder: "test",
